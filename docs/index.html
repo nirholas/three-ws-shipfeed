@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>@three-ws/shipfeed: Turn a repo&#39;s raw commit history into a release feed humans actually r</title>
+<meta name="description" content="Turn a repo&#39;s raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.">
+<link rel="canonical" href="https://nirholas.github.io/three-ws-shipfeed/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="three.ws">
+<meta property="og:title" content="@three-ws/shipfeed">
+<meta property="og:description" content="Turn a repo&#39;s raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.">
+<meta property="og:url" content="https://nirholas.github.io/three-ws-shipfeed/">
+<meta property="og:image" content="https://nirholas.github.io/three-ws-shipfeed/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@three-ws/shipfeed">
+<meta name="twitter:description" content="Turn a repo&#39;s raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.">
+<meta name="twitter:image" content="https://nirholas.github.io/three-ws-shipfeed/og.png">
+<meta name="keywords" content="changelog, conventional-commits, release-notes, commit-parser, provenance, git, github, telegram, rss, three.ws, ai-agents">
+<link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+<link rel="icon" href="https://three.ws/three-ws-mcp-icon.svg" type="image/svg+xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"@three-ws/shipfeed","description":"Turn a repo's raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.","codeRepository":"https://github.com/nirholas/three-ws-shipfeed","programmingLanguage":"JavaScript","license":"https://spdx.org/licenses/Apache-2.0.html","version":"0.1.0","url":"https://nirholas.github.io/three-ws-shipfeed/","author":{"@type":"Organization","name":"three.ws","url":"https://three.ws"},"keywords":"changelog, conventional-commits, release-notes, commit-parser, provenance, git, github, telegram, rss, three.ws, ai-agents"}</script>
+<style>:root{--bg:#fff;--fg:#111418;--mut:#586069;--line:#e3e6ea;--acc:#2563eb;--code:#f4f6f8;--card:#fafbfc}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0d10;--fg:#e8eaed;--mut:#9aa3ad;--line:#232830;--acc:#6ea0ff;--code:#14181d;--card:#10141a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--acc)}a:focus-visible,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+header.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{font-weight:700;text-decoration:none;color:var(--fg)}
+.bar nav{margin-left:auto;display:flex;gap:16px;font-size:14px}
+.bar nav a{color:var(--mut);text-decoration:none;transition:color .15s}.bar nav a:hover{color:var(--fg)}
+.hero{max-width:1100px;margin:0 auto;padding:48px 16px 24px}
+.hero h1{font-size:clamp(28px,5vw,44px);line-height:1.15;margin:0 0 12px;letter-spacing:-.02em}
+.hero p{color:var(--mut);max-width:70ch;font-size:18px;margin:0 0 24px}
+.install{display:flex;align-items:center;gap:8px;max-width:620px;background:var(--code);border:1px solid var(--line);border-radius:10px;padding:6px 6px 6px 14px}
+.install code{flex:1;overflow-x:auto;white-space:nowrap;font:14px ui-monospace,SFMono-Regular,Menlo,monospace}
+.install button{border:0;background:var(--acc);color:#fff;border-radius:7px;padding:8px 14px;font:600 13px system-ui;cursor:pointer;transition:transform .12s,opacity .12s}
+.install button:hover{opacity:.9}.install button:active{transform:scale(.96)}
+.cta{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.cta a{padding:9px 16px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;color:var(--fg);transition:border-color .15s,transform .15s}
+.cta a:hover{border-color:var(--acc);transform:translateY(-1px)}.cta a.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.layout{max-width:1100px;margin:0 auto;padding:8px 16px 64px;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:40px}
+@media(max-width:860px){.layout{grid-template-columns:minmax(0,1fr)}.toc{display:none}}
+.toc{position:sticky;top:76px;align-self:start;font-size:14px;border-left:1px solid var(--line);padding-left:16px}
+.toc p{margin:0 0 8px;font-weight:700;color:var(--mut);text-transform:uppercase;font-size:12px;letter-spacing:.06em}
+.toc ul{list-style:none;margin:0;padding:0}.toc li{margin:6px 0}.toc a{color:var(--mut);text-decoration:none}.toc a:hover{color:var(--fg)}
+main{min-width:0;overflow-wrap:anywhere}main pre code{overflow-wrap:normal}main img{max-width:100%;height:auto}
+main h2{margin-top:2.2em;padding-bottom:.3em;border-bottom:1px solid var(--line)}
+.anchor{margin-left:-1.1em;padding-right:.4em;text-decoration:none;opacity:0;color:var(--mut)}h2:hover .anchor,h3:hover .anchor,h4:hover .anchor{opacity:1}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.5}
+code{font:0.9em ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--code);padding:.15em .35em;border-radius:5px}pre code{background:none;padding:0}
+table{border-collapse:collapse;display:block;overflow-x:auto;max-width:100%}th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}th{background:var(--card)}
+blockquote{margin:1em 0;padding:.2em 1em;border-left:4px solid var(--line);color:var(--mut)}
+footer{border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+.foot-in{max-width:1100px;margin:0 auto;padding:24px 16px;display:flex;gap:16px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}</style>
+</head>
+<body>
+<header class="bar"><div class="bar-in">
+<a class="brand" href="https://nirholas.github.io/three-ws-shipfeed/">@three-ws/shipfeed</a>
+<nav aria-label="Project links"><a href="https://github.com/nirholas/three-ws-shipfeed">GitHub</a><a href="https://www.npmjs.com/package/@three-ws/shipfeed">npm</a><a href="llms.txt">llms.txt</a><a href="https://three.ws">three.ws</a></nav>
+</div></header>
+<section class="hero">
+<h1>@three-ws/shipfeed</h1>
+<p>Turn a repo&#39;s raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.</p>
+<div class="install" role="group" aria-label="Install command"><code>npx -y @three-ws/shipfeed</code><button type="button" data-copy="npx -y @three-ws/shipfeed">Copy</button></div>
+<div class="cta"><a class="pri" href="https://github.com/nirholas/three-ws-shipfeed">View on GitHub</a><a href="https://github.com/nirholas/three-ws-shipfeed/stargazers">Star the repo</a></div>
+</section>
+<div class="layout">
+<main id="content"><h1>@three-ws/shipfeed</h1>
+<p>Turn a repository&#39;s raw commit history into a release feed humans actually read, and join it to the changelog you already write.</p>
+<p>Every project keeps two records of the same work. The commit log is complete and unreadable. The changelog is readable and incomplete. Nothing points one at the other, so nobody can answer the two questions that matter most about a release: <em>which code shipped this?</em> and <em>what shipped that nobody wrote up?</em></p>
+<p><code>shipfeed</code> answers both. It parses commits, scores who each one is for, and matches release notes to the commits that produced them, without asking you to add a single line of metadata to your workflow. Every match carries a confidence score and the reasons behind it, so a wrong link is visible instead of implied.</p>
+<p>Zero dependencies. Pure functions. Runs in Node, in a serverless handler, and in a browser.</p>
+<pre><code class="language-bash">npm install @three-ws/shipfeed
+</code></pre>
+<h2 id="the-30-second-version"><a class="anchor" href="#the-30-second-version" aria-label="Link to this section">#</a>The 30-second version</h2>
+<pre><code class="language-bash"># The current repo, read from GitHub, printed as a report
+npx @three-ws/shipfeed
+
+# Any repo, linked against any changelog JSON
+npx @three-ws/shipfeed --repo nirholas/three.ws --changelog https://three.ws/changelog.json
+
+# Why did this commit get classified and linked the way it did?
+npx @three-ws/shipfeed explain 65f3fe5
+
+# Velocity, audience mix, and how much of the work was ever announced
+npx @three-ws/shipfeed stats
+</code></pre>
+<pre><code>ship log · nirholas/three.ws
+200 commits · 45 releases · 135 linked · 68% coverage
+
+2026-08-28  Your agent now tells you the important things in person
+    d1f7b45 Feature · companion let the corner avatar walk on and deliver a user&#39;s own messages
+    b019fc9 Feature · companion speak fresh unread notifications through the corner avatar
+    20f50e8 Feature · notifications wire the avatar as a first-class delivery channel
+</code></pre>
+<h2 id="in-code"><a class="anchor" href="#in-code" aria-label="Link to this section">#</a>In code</h2>
+<pre><code class="language-js">import { shipfeed } from &#39;@three-ws/shipfeed&#39;;
+
+const feed = await shipfeed({
+	repo: &#39;nirholas/three.ws&#39;,
+	changelogUrl: &#39;https://three.ws/changelog.json&#39;,
+	siteUrl: &#39;https://three.ws&#39;,
+	limit: 200,
+	productScopes: [&#39;forge&#39;, &#39;wallet&#39;, &#39;companion&#39;],
+});
+
+for (const release of feed.releases) {
+	console.log(release.title, &#39;&lt;-&#39;, release.stats.commits, &#39;commits&#39;);
+	for (const commit of release.commits) {
+		console.log(&#39;  &#39;, commit.shortSha, commit.headline, `(${commit.confidence})`, commit.why[0]);
+	}
+}
+
+console.log(`${Math.round(feed.stats.coverage * 100)}% of visible commits are accounted for`);
+console.log(`${feed.ships.length} bursts of work were never written up`);
+</code></pre>
+<p>Nothing here needs a token for a public repository, though GitHub&#39;s unauthenticated limit is 60 requests an hour per IP. Pass <code>token</code> (or set <code>GITHUB_TOKEN</code>) to raise it.</p>
+<h2 id="what-it-does-in-four-pieces"><a class="anchor" href="#what-it-does-in-four-pieces" aria-label="Link to this section">#</a>What it does, in four pieces</h2>
+<h3 id="1-parse"><a class="anchor" href="#1-parse" aria-label="Link to this section">#</a>1. Parse</h3>
+<p>Full Conventional Commits 1.0.0, plus the three things real repositories have that the spec never covers: revert subjects, GitHub&#39;s merge subjects, and trailers that carry meaning.</p>
+<pre><code class="language-js">import { parseCommitMessage, headline } from &#39;@three-ws/shipfeed&#39;;
+
+const c = parseCommitMessage(&#39;feat(resilience)!: add a breaker\n\nBREAKING CHANGE: v1 callers must migrate&#39;);
+// { type: &#39;feat&#39;, scope: &#39;resilience&#39;, breaking: true, description: &#39;add a breaker&#39;, ... }
+
+headline(c); // &#39;Feature · resilience (breaking)&#39;
+</code></pre>
+<p>A non-conventional subject is not thrown away. <code>Avatar Studio: 122 sliders</code> keeps its own convention (<code>Avatar Studio</code> / <code>122 sliders</code>), and a subject with no convention at all is reported honestly as <code>New commit</code> rather than mangled into one.</p>
+<h3 id="2-classify"><a class="anchor" href="#2-classify" aria-label="Link to this section">#</a>2. Classify</h3>
+<p>Each commit gets an audience and a signal score from 0 to 1, with a reason for every point awarded.</p>
+<table>
+<thead>
+<tr>
+<th>audience</th>
+<th>who it is for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>holder</code></td>
+<td>someone who uses or owns a piece of the product</td>
+</tr>
+<tr>
+<td><code>developer</code></td>
+<td>someone who builds against it</td>
+</tr>
+<tr>
+<td><code>internal</code></td>
+<td>someone who works on it</td>
+</tr>
+</tbody></table>
+<pre><code class="language-js">import { classify } from &#39;@three-ws/shipfeed&#39;;
+
+classify(commit, { productScopes: [&#39;forge&#39;, &#39;wallet&#39;] });
+// {
+//   audience: &#39;holder&#39;,
+//   signal: 0.86,
+//   noise: false,
+//   reasons: [
+//     { rule: &#39;type:feat&#39;, delta: 0.72, note: &#39;conventional type &quot;feat&quot;&#39; },
+//     { rule: &#39;scope:forge&#39;, delta: 0.12, note: &#39;named product scope&#39; },
+//     { rule: &#39;description:explanatory&#39;, delta: 0.06, note: &#39;description explains the change&#39; },
+//   ],
+// }
+</code></pre>
+<p>Merge commits, <code>chore(deps):</code> bumps, and lockfile-only changes come back <code>noise: true</code>. That single flag is usually all a notification lane needs to stop being unreadable.</p>
+<p><code>productScopes</code> is the highest-leverage option in the package: naming the parts of your product a reader has actually seen is what lifts <code>fix(forge)</code> above <code>fix(build)</code>.</p>
+<h3 id="3-link"><a class="anchor" href="#3-link" aria-label="Link to this section">#</a>3. Link</h3>
+<p>Which commits produced which release note, without metadata.</p>
+<p>An explicit <code>Changelog: &lt;slug&gt;</code> trailer always wins. Where there is none (which is almost everywhere), four signals decide:</p>
+<ol>
+<li><strong>A time window.</strong> An entry is written the day its work lands, so only commits inside <code>windowDays</code> are candidates.</li>
+<li><strong>IDF-weighted term overlap.</strong> Shared rare words (&quot;meshopt&quot;, &quot;settle&quot;, &quot;fingerspelling&quot;) count; shared common ones (&quot;agent&quot;, &quot;the&quot;, &quot;fix&quot;) do not. Similarity blends coverage of the entry with containment of the commit, so a one-line commit can still explain a paragraph-long note.</li>
+<li><strong>Tag agreement.</strong> An entry tagged <code>fix</code> prefers a <code>fix:</code> commit.</li>
+<li><strong>Proximity.</strong> Same-day work outranks work three days out.</li>
+</ol>
+<pre><code class="language-js">import { linkCommits } from &#39;@three-ws/shipfeed&#39;;
+
+const { byEntry, byCommit, orphans } = linkCommits(entries, commits, { threshold: 0.26 });
+
+byCommit.get(sha);
+// {
+//   entryKey: &#39;2026-08-27:Text-to-3D now has five independent image sources behind it&#39;,
+//   score: 0.41,
+//   reasons: [&#39;shared terms: painter, concept, providers&#39;, &#39;type &quot;fix&quot; matches tag&#39;, &#39;before the entry by 0.4d&#39;],
+// }
+</code></pre>
+<p>A commit belongs to at most one entry; an entry may claim many. Everything unclaimed comes back in <code>orphans</code>, which is the interesting half: it is the work that shipped and was never written up.</p>
+<h3 id="4-render"><a class="anchor" href="#4-render" aria-label="Link to this section">#</a>4. Render</h3>
+<pre><code class="language-js">import { renderMarkdown, renderRss, renderTerminal, renderReleaseTelegram } from &#39;@three-ws/shipfeed&#39;;
+
+renderMarkdown(feed);                                  // a RELEASES.md or a PR body
+renderRss(feed, { siteUrl: &#39;https://three.ws/ship&#39; }); // a feed reader
+renderTerminal(feed, { color: true });                 // a terminal report
+renderReleaseTelegram(feed.releases[0], { repo });     // one chat message, with a &quot;shipped in 7 commits&quot; link
+</code></pre>
+<h2 id="api"><a class="anchor" href="#api" aria-label="Link to this section">#</a>API</h2>
+<table>
+<thead>
+<tr>
+<th>export</th>
+<th>what it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>shipfeed(options)</code></td>
+<td>read a repo (and changelog) and return the unified feed</td>
+</tr>
+<tr>
+<td><code>buildShipFeed({commits, entries, ...})</code></td>
+<td>the same thing from data you already have</td>
+</tr>
+<tr>
+<td><code>parseCommitMessage(message)</code> / <code>parseCommit(githubCommit)</code></td>
+<td>conventional-commit parsing</td>
+</tr>
+<tr>
+<td><code>headline(commit)</code> / <code>summaryLine(commit)</code></td>
+<td>reader-facing title and description</td>
+</tr>
+<tr>
+<td><code>classify(commit, options)</code> / <code>filterByAudience(commits, min)</code></td>
+<td>audience and signal scoring</td>
+</tr>
+<tr>
+<td><code>linkCommits(entries, commits, options)</code></td>
+<td>changelog-to-commit provenance</td>
+</tr>
+<tr>
+<td><code>groupIntoShips(commits, options)</code></td>
+<td>cluster commits into bursts</td>
+</tr>
+<tr>
+<td><code>renderMarkdown</code> / <code>renderRss</code> / <code>renderTerminal</code> / <code>renderCommitTelegram</code> / <code>renderReleaseTelegram</code></td>
+<td>output</td>
+</tr>
+<tr>
+<td><code>fetchGitHubCommits</code> / <code>fetchChangelog</code> / <code>commitsFromGitLog</code> / <code>normalizeChangelog</code></td>
+<td>sources</td>
+</tr>
+<tr>
+<td><code>tokenize</code> / <code>buildIdf</code> / <code>entryKey</code> / <code>entrySlug</code></td>
+<td>the linking internals, exported for tuning</td>
+</tr>
+</tbody></table>
+<p>Full types ship in <code>src/index.d.ts</code>.</p>
+<h3 id="feed-shape"><a class="anchor" href="#feed-shape" aria-label="Link to this section">#</a>Feed shape</h3>
+<pre><code class="language-jsonc">{
+  &quot;version&quot;: 1,
+  &quot;generatedAt&quot;: &quot;2026-08-28T03:00:00.000Z&quot;,
+  &quot;repo&quot;: &quot;nirholas/three.ws&quot;,
+  &quot;releases&quot;: [
+    {
+      &quot;date&quot;: &quot;2026-08-27&quot;,
+      &quot;title&quot;: &quot;Text-to-3D now has five independent image sources behind it&quot;,
+      &quot;summary&quot;: &quot;...&quot;,
+      &quot;tags&quot;: [&quot;fix&quot;, &quot;infra&quot;],
+      &quot;url&quot;: &quot;https://three.ws/changelog/2026-08-27-text-to-3d-...&quot;,
+      &quot;commits&quot;: [
+        {
+          &quot;shortSha&quot;: &quot;2771f41&quot;,
+          &quot;headline&quot;: &quot;Feature · forge&quot;,
+          &quot;summary&quot;: &quot;three more independent concept-image rungs&quot;,
+          &quot;audience&quot;: &quot;holder&quot;,
+          &quot;signal&quot;: 0.86,
+          &quot;confidence&quot;: 0.41,
+          &quot;why&quot;: [&quot;shared terms: painter, concept, providers&quot;]
+        }
+      ],
+      &quot;stats&quot;: { &quot;commits&quot;: 4, &quot;authors&quot;: 1, &quot;range&quot;: &quot;2771f41..c6f0e52&quot; }
+    }
+  ],
+  &quot;ships&quot;: [{ &quot;id&quot;: &quot;a1b2c3d..e4f5a6b&quot;, &quot;title&quot;: &quot;Fix · wallet&quot;, &quot;commits&quot;: [] }],
+  &quot;stats&quot;: {
+    &quot;commits&quot;: 200, &quot;linked&quot;: 135, &quot;orphans&quot;: 65, &quot;coverage&quot;: 0.68,
+    &quot;byAudience&quot;: { &quot;holder&quot;: 124, &quot;developer&quot;: 54, &quot;internal&quot;: 22 },
+    &quot;velocity&quot;: [{ &quot;date&quot;: &quot;2026-08-27&quot;, &quot;count&quot;: 61 }]
+  }
+}
+</code></pre>
+<h2 id="working-from-a-local-clone"><a class="anchor" href="#working-from-a-local-clone" aria-label="Link to this section">#</a>Working from a local clone</h2>
+<p>No network, no API limit:</p>
+<pre><code class="language-js">import { execFileSync } from &#39;node:child_process&#39;;
+import { commitsFromGitLog, GIT_LOG_FORMAT, buildShipFeed } from &#39;@three-ws/shipfeed&#39;;
+
+const log = execFileSync(&#39;git&#39;, [&#39;log&#39;, &#39;-n200&#39;, `--format=${GIT_LOG_FORMAT}`], { encoding: &#39;utf8&#39; });
+const feed = buildShipFeed({ commits: commitsFromGitLog(log, { repo: &#39;o/r&#39; }), entries });
+</code></pre>
+<p>The CLI does exactly this behind <code>--local</code>.</p>
+<h2 id="cli-reference"><a class="anchor" href="#cli-reference" aria-label="Link to this section">#</a>CLI reference</h2>
+<pre><code>shipfeed [feed]            build the unified release feed (default)
+shipfeed explain &lt;sha&gt;     why one commit was classified and linked as it was
+shipfeed stats             velocity, audience mix, and changelog coverage
+shipfeed post              render what would go to a channel (add --send to deliver)
+
+--repo &lt;owner/name&gt;        default: parsed from the git &quot;origin&quot; remote
+--branch &lt;name&gt;            default: main
+--limit &lt;n&gt;                commits to read (default 200)
+--local                    read commits from the local clone with git log
+--changelog &lt;url|path&gt;     changelog JSON to link commits against
+--site &lt;url&gt;               site base URL used for permalinks
+--scopes &lt;a,b,c&gt;           scopes that mean &quot;product&quot; when scoring signal
+--min-audience &lt;a&gt;         holder | developer | internal (default internal)
+--json | --markdown | --rss | --no-color
+--telegram --chat &lt;id&gt; --token &lt;t&gt; --send     post mode; dry run without --send
+</code></pre>
+<p><code>post</code> never sends anything without <code>--send</code>. Without it you get the exact messages that would have gone out, on stdout.</p>
+<h2 id="where-this-runs-in-production"><a class="anchor" href="#where-this-runs-in-production" aria-label="Link to this section">#</a>Where this runs in production</h2>
+<p>three.ws publishes its own feed from this package:</p>
+<ul>
+<li><a href="https://three.ws/ship">three.ws/ship</a> renders it</li>
+<li><a href="https://three.ws/api/ship/feed">three.ws/api/ship/feed</a> serves it as JSON, Markdown, or RSS, and <code>?explain=&lt;sha&gt;</code> returns one commit&#39;s full reasoning</li>
+<li>the holder Telegram channel uses it twice: release announcements carry a &quot;shipped in N commits&quot; link, and the raw commit lane drops merge and lockfile noise before it posts</li>
+</ul>
+<h2 id="license"><a class="anchor" href="#license" aria-label="Link to this section">#</a>License</h2>
+<p>Apache-2.0</p>
+</main>
+<nav class="toc" aria-label="On this page"><p>On this page</p><ul><li><a href="#the-30-second-version">The 30-second version</a></li><li><a href="#in-code">In code</a></li><li><a href="#what-it-does-in-four-pieces">What it does, in four pieces</a></li><li><a href="#api">API</a></li><li><a href="#working-from-a-local-clone">Working from a local clone</a></li><li><a href="#cli-reference">CLI reference</a></li><li><a href="#where-this-runs-in-production">Where this runs in production</a></li><li><a href="#license">License</a></li></ul></nav>
+</div>
+<footer><div class="foot-in"><span>Apache-2.0 licensed</span><a href="https://github.com/nirholas/three-ws-shipfeed/issues">Issues</a><a href="https://github.com/nirholas/three-ws-shipfeed/blob/main/CONTRIBUTING.md">Contributing</a><a href="https://github.com/nirholas/three-ws-shipfeed/security/policy">Security</a><a href="https://three.ws">Part of three.ws</a></div></footer>
+<script>document.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){
+var t=b.getAttribute('data-copy');var done=function(){var o=b.textContent;b.textContent='Copied';setTimeout(function(){b.textContent=o},1400)};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,function(){})}
+else{var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');done()}catch(e){}a.remove()}})});</script>
+</body>
+</html>

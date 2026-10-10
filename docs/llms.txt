@@ -1,0 +1,19 @@
+# @three-ws/shipfeed
+
+> Turn a repo's raw commit history into a release feed humans actually read: conventional-commit parsing, audience classification, and changelog-to-commit provenance with no extra metadata.
+
+@three-ws/shipfeed is a JavaScript library from three.ws. Install: `npx -y @three-ws/shipfeed`.
+
+## Docs
+
+- [README](https://github.com/nirholas/three-ws-shipfeed/blob/main/README.md): install, configuration, full reference
+- [Documentation site](https://nirholas.github.io/three-ws-shipfeed/): the README as a web page
+- [Full text for LLMs](https://nirholas.github.io/three-ws-shipfeed/llms-full.txt): README inlined
+- [AGENTS.md](https://github.com/nirholas/three-ws-shipfeed/blob/main/AGENTS.md): guidance for coding agents
+
+## Project
+
+- [Source](https://github.com/nirholas/three-ws-shipfeed)
+- [npm](https://www.npmjs.com/package/@three-ws/shipfeed)
+- [three.ws](https://three.ws): the platform this is part of
+- [Issues](https://github.com/nirholas/three-ws-shipfeed/issues)
